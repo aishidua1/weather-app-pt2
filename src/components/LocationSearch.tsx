@@ -11,28 +11,65 @@ interface LocationSearchProps {
   onCitySelect: (cityName: string) => void;
 }
 
-export function LocationSearch({ onCitySelect }: LocationSearchProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const cityName = e.target.value;
-    if (cityName) {
-      onCitySelect(cityName);
-    }
-  };
+import { useState } from "react";
+
+type Props = {
+  onCitySelect: (city: string) => void;
+  cities?: string[]; // optional—keep your existing list if you have one
+};
+
+export default function LocationSearch({ onCitySelect, cities }: Props) {
+  const [value, setValue] = useState("");
+
+  const cityOptions =
+    cities ??
+    ["Durham", "Raleigh", "Chapel Hill", "Charlotte", "New York", "San Francisco", "Chicago"];
 
   return (
-    <div className="w-full max-w-md">
-      <select
-        onChange={handleChange}
-        defaultValue=""
-        className="w-full ps-2 pe-4 py-2 border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white"
-      >
-        <option value="">Select a city...</option>
-        {CITIES.map((city) => (
-          <option key={city.name} value={city.name}>
-            {city.name}
-          </option>
-        ))}
-      </select>
+    <div className="w-full max-w-lg mx-auto px-6">
+      <label className="sr-only" htmlFor="city-select">
+        Select a city
+      </label>
+
+      <div className="relative">
+        <select
+          id="city-select"
+          value={value}
+          onChange={(e) => {
+            const v = e.target.value;
+            setValue(v);
+            if (v) onCitySelect(v);
+          }}
+          className="
+            w-full appearance-none rounded-2xl bg-white/5 border border-white/10
+            px-4 py-3 pr-12 text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,.06)]
+            outline-none backdrop-blur-md
+            focus:ring-2 focus:ring-fuchsia-400/40 focus:border-fuchsia-400/40
+            hover:bg-white/[0.08] transition
+          "
+        >
+          <option value="">{value ? "Change city…" : "Select a city…"}</option>
+          {cityOptions.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        {/* Custom caret */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300/80"
+        >
+          ▾
+        </span>
+      </div>
+
+      {/* Helper text (optional) */}
+      <p className="mt-2 text-sm text-zinc-400 text-center">
+        Start by choosing a city to see the latest weather.
+      </p>
     </div>
   );
 }
+

@@ -18,20 +18,27 @@ export interface CurrentWeather {
   condition: WeatherCondition;
 }
 
-export interface DailyForecast {
-  date: string; // ISO date string
-  maxTemp: number; // in Fahrenheit
-  minTemp: number; // in Fahrenheit
-  condition: WeatherCondition;
-}
+export type DailyForecast = {
+  date: string;    // ISO date, e.g. "2025-11-11"
+  label: string;   // "Tomorrow", "Thu, Nov 13"
+  high: number;    // °F
+  low: number;     // °F
+  code: number;    // WMO code
+  summary: string; // "Partly cloudy", etc.
+};
 
-export interface WeatherData {
+export type WeatherData = {
   city: string;
-  latitude: number;
-  longitude: number;
-  current: CurrentWeather;
-  forecast: DailyForecast[];
-}
+  lat: number;     // latitude
+  lon: number;     // longitude
+  temp: number;    // current °F
+  feelsLike: number;
+  humidity: number; // %
+  wind: number;     // mph
+  code: number;     // WMO code
+  condition: string;
+  daily: DailyForecast[];
+};
 
 /**
  * WMO Weather interpretation codes

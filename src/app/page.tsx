@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LocationSearch } from "@/components/LocationSearch";
+import  LocationSearch  from "@/components/LocationSearch";
 import { LoadingState } from "@/components/LoadingState";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { WeatherDisplay } from "@/components/WeatherDisplay";
+import  WeatherDisplay  from "@/components/WeatherDisplay";
 import { PageHeader } from "@/components/PageHeader";
 import { getWeatherData } from "@/lib/getWeather";
 import { WeatherData } from "@/types/weather";
@@ -17,41 +17,33 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadCityWeather = (cityName: string) => {
+  const loadCityWeather = async (cityName: string) => {  // ✅ async
     setLoading(true);
     setError("");
-
-    const data = getWeatherData(cityName);
-
-    if (data) {
-      setWeather(data);
-    } else {
+    try {
+      const data = await getWeatherData(cityName);        // ✅ await
+      if (data) {
+        setWeather(data);
+      } else {
+        setError(`Failed to load weather data for ${cityName}`);
+      }
+    } catch (e) {
       setError(`Failed to load weather data for ${cityName}`);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
-    // Load default city weather on mount
-    loadCityWeather(DEFAULT_CITY);
+    loadCityWeather("Durham"); // or DEFAULT_CITY
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <main className="w-full max-w-2xl space-y-8">
-        {/* Header */}
-        <PageHeader
-          title="Weather App"
-          subtitle="Simple weather forecast for your city"
-        />
-
-        {/* Search at the top */}
-        <div className="flex flex-col items-center">
-          <LocationSearch onCitySelect={loadCityWeather} />
-        </div>
-
-        {/* Weather display */}
+        {/* header + selector */}
+        {/* pass cities if you want: cities={Object.keys(CITIES)} */}
+        <LocationSearch onCitySelect={loadCityWeather} />
         {loading && <LoadingState />}
         {error && <ErrorMessage message={error} />}
         {weather && !loading && <WeatherDisplay weather={weather} />}

@@ -3,15 +3,15 @@ interface PageHeaderProps {
   subtitle?: string;
 }
 
-export function PageHeader({ title, subtitle }: PageHeaderProps) {
+export function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="text-center space-y-2">
-      <h1 className="text-4xl font-bold text-zinc-900 dark:text-white">
+    <header className="max-w-5xl mx-auto text-center pt-16 pb-6 px-6">
+      <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
         {title}
       </h1>
-      {subtitle && (
-        <p className="text-zinc-600 dark:text-zinc-400">{subtitle}</p>
-      )}
-    </div>
+      <p className="mt-4 text-zinc-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+        {subtitle}
+      </p>
+    </header>
   );
 }
